@@ -1,0 +1,71 @@
+﻿{
+   "CodeGenerationMode": 2,
+   "ContextClassName": "fantasyftContext",
+   "ContextNamespace": null,
+   "DefaultDacpacSchema": null,
+   "FilterSchemas": false,
+   "IncludeConnectionString": true,
+   "ModelNamespace": null,
+   "OutputContextPath": null,
+   "OutputPath": "Models",
+   "ProjectRootNamespace": "FAntasyftt",
+   "Schemas": null,
+   "SelectedHandlebarsLanguage": 0,
+   "SelectedToBeGenerated": 0,
+   "Tables": [
+      {
+         "Name": "public.position",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.spielen",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.coach",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.schiedsrichter",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.stadion",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.match",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.team",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.spieler",
+         "ObjectType": 0
+      },
+      {
+         "Name": "public.uebernehmen",
+         "ObjectType": 0
+      }
+   ],
+   "UiHint": "EFFantasyft",
+   "UseBoolPropertiesWithoutDefaultSql": false,
+   "UseDatabaseNames": false,
+   "UseDbContextSplitting": false,
+   "UseFluentApiOnly": true,
+   "UseHandleBars": false,
+   "UseHierarchyId": false,
+   "UseInflector": false,
+   "UseLegacyPluralizer": false,
+   "UseManyToManyEntity": false,
+   "UseNoConstructor": false,
+   "UseNoDefaultConstructor": false,
+   "UseNoNavigations": false,
+   "UseNoObjectFilter": false,
+   "UseNodaTime": false,
+   "UseNullableReferences": false,
+   "UseSchemaFolders": false,
+   "UseSpatial": false
+}
