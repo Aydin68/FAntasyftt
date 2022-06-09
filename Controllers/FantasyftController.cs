@@ -1,6 +1,9 @@
-﻿using FAntasyftt.Models;
+﻿using FantasyftLibraryy.Models;
+using FAntasyftt.Models;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Linq;
 
 namespace FAntasyftt.Controllers
 {
@@ -8,7 +11,7 @@ namespace FAntasyftt.Controllers
     [ApiController]
     public class FantasyftController : ControllerBase
     {
-        fantasyftContext context = new fantasyftContext();
+        static fantasyftContext context = new fantasyftContext();
 
         //----------------------------------------------------------GET-ROUTES---------------------------------------------------------------------------------------------------------------------
 
@@ -25,18 +28,30 @@ namespace FAntasyftt.Controllers
         {
             Console.WriteLine($"Returning the gameplan of the Team with the ID:{teamid}...");
 
-            Team selectedTeam = context.Team.Where(l=>l.TId==teamid).FirstOrDefault();
+            Team selectedTeam = context.Team.Include(p=>p.MId).ThenInclude(l=>l.Sch).Include(l=>l.Stadion).Where(l=>l.TId==teamid).FirstOrDefault();
             
-            var match = context.Match.Where(j => j.TId.Contains(selectedTeam)).ToList();
+           // var mm = context.Match.Where(j => j.TId.Contains(selectedTeam)).ToList();
+           var mm = selectedTeam.MId;
+            
+            
+            foreach (var item in mm)
+            {
+               // item.St = context.Stadion.Where(l => l.StId == item.StId).FirstOrDefault(); 
+                item.Sch=context.Schiedsrichter.Where(l=>l.SchId==item.SchId).FirstOrDefault();
+
+               
+               
+               
+            }
            
-            if (selectedTeam == null || match == null)
+            if (selectedTeam == null || mm == null)
             {
                 return NotFound();
             }
             else
             {
                
-                return Ok(match);
+                return Ok(mm);
             }
 
              
@@ -47,7 +62,7 @@ namespace FAntasyftt.Controllers
         public IEnumerable<Spieler> GetPlayers()
         {
             Console.WriteLine("Returning all Players ...");
-            return context.Spieler;
+            return context.Spieler ;
         }
 
         
@@ -67,8 +82,9 @@ namespace FAntasyftt.Controllers
             var selectedTeam = context.Team.Where(l => l.TId == teamId).FirstOrDefault();
             var spieler = context.Spieler.Where(k => k.TId == teamId).ToList();
            
+           
             Console.WriteLine($"Returning all Players from Team with the ID:{teamId} ...");
-            return  spieler;
+            return spieler;
         }
 
         
@@ -83,21 +99,21 @@ namespace FAntasyftt.Controllers
         
 
         [HttpGet("Teams/{teamId}/Coach")]
-        public ActionResult<Coach> GetCoach(int teamId)
+        public IEnumerable<Coach> GetCoach(int teamId)
         {
             
             var club = context.Team.Where(L => L.TId == teamId).FirstOrDefault();
-            var coach = context.Coach.Where(l => l.TId == teamId).FirstOrDefault();
-            Console.WriteLine($"Returning the coach from the club with the ID: {teamId}...");
-            if (club != null || coach != null)
-            {
-                return Ok(coach);
-            }
+            var coach = context.Coach.Where(l => l.TId == teamId).ToList();
+         
+            
 
-            else
-            {
-                return NotFound();
-            }
+    
+            Console.WriteLine($"Returning the coach from the club with the ID: {teamId}...");
+
+            return coach;
+            
+
+       
         }
 
         [HttpGet("Stadiums")]
@@ -112,7 +128,7 @@ namespace FAntasyftt.Controllers
         public ActionResult<Stadion> GetStadium(int teamId)
         {
             var club = context.Team.Where(L => L.TId == teamId).FirstOrDefault();
-            var stadion = context.Stadion.Where(l => l.TId == teamId).FirstOrDefault();
+            var stadion = context.Stadion.Where(l => l.TId == teamId).ToList();
             Console.WriteLine($"Returning Stadium of the club with the ID:{teamId} ...");
             if (club==null||stadion== null)
             {

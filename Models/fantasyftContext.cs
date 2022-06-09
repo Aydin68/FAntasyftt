@@ -2,8 +2,10 @@
 #nullable disable
 using System;
 using System.Collections.Generic;
+using FantasyftLibraryy.Models;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata;
+
 
 namespace FAntasyftt.Models
 {
