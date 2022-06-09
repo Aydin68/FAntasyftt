@@ -28,7 +28,7 @@ namespace FAntasyftt.Controllers
         {
             Console.WriteLine($"Returning the gameplan of the Team with the ID:{teamid}...");
 
-            Team selectedTeam = context.Team.Include(p=>p.MId).ThenInclude(l=>l.Sch).Include(l=>l.Stadion).Where(l=>l.TId==teamid).FirstOrDefault();
+            Team selectedTeam = context.Team.Include(p=>p.MId).ThenInclude(l=>l.Sch).Where(l=>l.TId==teamid).FirstOrDefault();
             
            // var mm = context.Match.Where(j => j.TId.Contains(selectedTeam)).ToList();
            var mm = selectedTeam.MId;
@@ -36,8 +36,8 @@ namespace FAntasyftt.Controllers
             
             foreach (var item in mm)
             {
-               // item.St = context.Stadion.Where(l => l.StId == item.StId).FirstOrDefault(); 
-                item.Sch=context.Schiedsrichter.Where(l=>l.SchId==item.SchId).FirstOrDefault();
+                item.St = context.Stadion.Where(l => l.StId == item.StId).FirstOrDefault(); 
+                //item.Sch=context.Schiedsrichter.Where(l=>l.SchId==item.SchId).FirstOrDefault();
 
                
                
