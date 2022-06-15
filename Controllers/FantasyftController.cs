@@ -171,22 +171,23 @@ namespace FAntasyftt.Controllers
                
 
                 context.Team.Remove(selectedTeam);
+                context.SaveChanges();
                 return Ok();
 
                
             }
         }
 
-        [HttpDelete("Spieler/{spielerid}")]
+        [HttpDelete("Players/{spielerid}")]
         public ActionResult DeletePlayer(int spielerid)
         {
             Console.WriteLine($"Deleting Player with the ID: {spielerid}...");
 
             Spieler selectedPlayer = context.Spieler.Where(p =>p.SId == spielerid).FirstOrDefault();
-            Team team = context.Team.Where(l => l.TId == selectedPlayer.TId).FirstOrDefault();
+            
             
 
-            if (selectedPlayer == null || team == null)
+            if (selectedPlayer == null )
             {
                 return NotFound();
             }
@@ -195,7 +196,8 @@ namespace FAntasyftt.Controllers
               
 
                 context.Spieler.Remove(selectedPlayer);
-                
+                context.SaveChanges();
+
                 return Ok();
 
 
@@ -207,7 +209,7 @@ namespace FAntasyftt.Controllers
 
         
 
-        [HttpDelete("Coach/{coachid}")]
+        [HttpDelete("Coaches/{coachid}")]
         public ActionResult DeleteCoach(int coachid)
         {
             Console.WriteLine($"Deleting Coach with the ID: {coachid}...");
@@ -226,7 +228,7 @@ namespace FAntasyftt.Controllers
                 if (team != null)
                 {
                     context.Coach.Remove(selectedCoach);
-
+                    context.SaveChanges();
 
                     return Ok();
                 }
@@ -246,7 +248,7 @@ namespace FAntasyftt.Controllers
 
 
 
-        [HttpDelete("Stadium/{stadiumid}")]
+        [HttpDelete("Stadiums/{stadiumid}")]
         public ActionResult DeleteStadium(int stadiumid)
         {
             Console.WriteLine($"Deleting Stadium with the ID: {stadiumid}...");
@@ -266,7 +268,7 @@ namespace FAntasyftt.Controllers
                 if (team != null)
                 {
                     context.Stadion.Remove(selectedStadium);
-
+                    context.SaveChanges();
 
                     return Ok();
                 }
@@ -295,7 +297,7 @@ namespace FAntasyftt.Controllers
                
 
                 context.Schiedsrichter.Remove(selectedReferee);
-               
+                context.SaveChanges();
 
 
                 return Ok();
@@ -320,9 +322,10 @@ namespace FAntasyftt.Controllers
             }
             else
             {
-
+               
 
                 context.Match.Remove(match);
+                context.SaveChanges();
 
 
 
@@ -358,12 +361,12 @@ namespace FAntasyftt.Controllers
                 p.Trikotnummer = player.Trikotnummer;
                 p.Kapitaen = player.Kapitaen;
                 p.TId = player.TId;
-                
-              
-               
 
-                
-                    return Ok();
+
+                context.SaveChanges();
+
+
+                return Ok();
                 }
                 else
                     return NotFound();
@@ -392,9 +395,9 @@ namespace FAntasyftt.Controllers
                 c.Herkunft = coach.Herkunft;
                 c.TId = coach.TId;
 
-        
 
 
+                context.SaveChanges();
 
                 return Ok();
             }
@@ -404,7 +407,7 @@ namespace FAntasyftt.Controllers
 
         }
 
-        [HttpPatch("Teams/teamid")]
+        [HttpPatch("Teams/{teamid}")]
         public ActionResult UpdateTeam(int teamid, [FromBody] Team t)
         {
             Console.WriteLine($"Updating Team with the ID: {teamid} ... ");
@@ -419,6 +422,7 @@ namespace FAntasyftt.Controllers
                 team.Name = t.Name;
                 team.Land = t.Land;
                 team.Liga = t.Liga;
+                context.SaveChanges();
                 return Ok();
             }
             else
@@ -445,7 +449,8 @@ namespace FAntasyftt.Controllers
                 s.Kapazitaet = stadium.Kapazitaet;
                 s.Name = stadium.Name;
                 s.TId = stadium.TId;
-                
+
+                context.SaveChanges();
                 return Ok();
             }
             else
@@ -472,7 +477,9 @@ namespace FAntasyftt.Controllers
                 s.Nachname = sch.Nachname;
                 s.Aggressivitaet = sch.Aggressivitaet;
                 s.Vorname = sch.Vorname;
-               
+
+                context.SaveChanges();
+
                 return Ok();
             }
             else
@@ -494,13 +501,11 @@ namespace FAntasyftt.Controllers
 
             if (match != null)
             {
+           
                 match.Art=m.Art;
-                match.Datum = m.Datum;
-                match.SchId = m.SchId;
-                match.StId=m.StId;
-                match.Uhrzeit = m.Uhrzeit;
-                
+               
 
+                context.SaveChanges();
                 return Ok();
             }
             else
@@ -515,10 +520,9 @@ namespace FAntasyftt.Controllers
         public ActionResult<Team> AddTeam([FromBody] Team team)
         {
             Console.WriteLine("Adding a new Team...");
-            int maxid = context.Team.Select(k=>k.TId).Max() + 1;
-
-            team.TId = maxid;
+            
             context.Team.Add(team);
+            context.SaveChanges();
             return Ok(team);
         }
 
@@ -526,10 +530,20 @@ namespace FAntasyftt.Controllers
         public ActionResult<Spieler> AddPlayer([FromBody] Spieler spieler)
         {
             Console.WriteLine("Adding a new Player...");
-            int highestid = context.Spieler.Select(l=>l.SId).Max()+1;
-
-            spieler.SId=highestid;
+            
             context.Spieler.Add(spieler);
+            context.SaveChanges();
+            return Ok(spieler);
+        }
+
+        [HttpPost("Teams/{Teamid}(Players")]
+        public ActionResult<Spieler> AddPlayer(int teamid,[FromBody] Spieler spieler)
+        {
+            Team team = context.Team.Where(l => l.TId == teamid).FirstOrDefault();
+            Console.WriteLine($"Adding a new Player to the Team with the ID:{teamid}...");
+
+            team.Spieler.Add(spieler);
+            context.SaveChanges();
             return Ok(spieler);
         }
 
@@ -537,10 +551,9 @@ namespace FAntasyftt.Controllers
         public ActionResult<Stadion> AddStadium([FromBody] Stadion stadium)
         {
             Console.WriteLine("Adding a new Stadium...");
-            int highestid = context.Stadion.Select(l => l.StId).Max() + 1;
-
-            stadium.StId = highestid;
+           
             context.Stadion.Add(stadium);
+            context.SaveChanges();
             return Ok(stadium);
         }
 
@@ -548,21 +561,19 @@ namespace FAntasyftt.Controllers
         public ActionResult<Coach> AddStadium([FromBody] Coach coach)
         {
             Console.WriteLine("Adding a new Coach...");
-            int highestid = context.Coach.Select(l => l.CId).Max() + 1;
-
-            coach.CId = highestid;
+            
             context.Coach.Add(coach);
+            context.SaveChanges();
             return Ok(coach);
         }
 
-        [HttpPost("Referee")]
+        [HttpPost("Referees")]
         public ActionResult<Schiedsrichter> AddReferee([FromBody] Schiedsrichter schiedsrichter)
         {
             Console.WriteLine("Adding a new Referee...");
-            int highestid = context.Schiedsrichter.Select(l => l.SchId).Max() + 1;
-
-            schiedsrichter.SchId = highestid;
+            
             context.Schiedsrichter.Add(schiedsrichter);
+            context.SaveChanges();
             return Ok(schiedsrichter);
         }
 
@@ -570,10 +581,9 @@ namespace FAntasyftt.Controllers
         public ActionResult<Match> AddMatch([FromBody] Match m)
         {
             Console.WriteLine("Adding a new Match...");
-            int highestid = context.Match.Select(l => l.MId).Max() + 1;
-
-            m.MId = highestid;
+          
             context.Match.Add(m);
+            context.SaveChanges();
             return Ok(m);
         }
 
